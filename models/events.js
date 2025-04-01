@@ -32,7 +32,7 @@ const Event = sequelize.define('event', {
     user_id: { 
         type: DataTypes.INTEGER,
         references: {
-          model: 'Users',
+          model: 'User',
           key: 'id',
         },
         allowNull: false,

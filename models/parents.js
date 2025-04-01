@@ -10,7 +10,7 @@ const Parent = sequelize.define('parent', {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
-      model: 'Users',  // Table User à laquelle la clé fait référence
+      model: 'User',  
       key: 'id'
     },
     onDelete: 'CASCADE'  // Si un utilisateur est supprimé, le parent sera aussi supprimé

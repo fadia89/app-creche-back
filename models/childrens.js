@@ -7,8 +7,8 @@ const Children = sequelize.define('children', {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
-      model: 'Parents', 
-      key: 'id'            // La clé primaire de la table référencée
+      model: 'Parent', 
+      key: 'id'            
     },
     onDelete: 'CASCADE'    // Si un parent est supprimé, l'enfant sera aussi supprimé
   },
