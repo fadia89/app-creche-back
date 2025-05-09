@@ -1,33 +1,29 @@
 import { DataTypes } from 'sequelize';
 import { sequelize } from '../dataBase/db.js';
-import User from './users.js';
-import Children from './childrens.js';
 
-
-
-const Parent = sequelize.define('parent', {
+const Parent = sequelize.define('Parent', {
   user_id: {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
-      model: 'User',  
-      key: 'id'
+      model: 'User', 
+      key: 'id',
     },
-    onDelete: 'CASCADE'  // Si un utilisateur est supprimé, le parent sera aussi supprimé
+    onDelete: 'CASCADE',
   },
   address: {
     type: DataTypes.STRING,
-    allowNull: false
+    allowNull: false,
   },
   phone: {
     type: DataTypes.STRING,
-    allowNull: false
-  }
-}, 
-{
+    allowNull: false,
+  },
+}, {
   tableName: 'Parents',
-  timestamps: false
+  timestamps: false,
 });
 
 
-export default Parent;
+export default Parent
+

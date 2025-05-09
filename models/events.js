@@ -3,12 +3,10 @@ import { DataTypes } from 'sequelize';
 
 
 
+
+
 const Event = sequelize.define('event', {
-    id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true,
-      },
+    
     name: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -29,6 +27,10 @@ const Event = sequelize.define('event', {
         type: DataTypes.INTEGER, 
         allowNull: true, 
       },
+    quota: {
+      type: DataTypes.INTEGER, 
+      allowNull: true, 
+    },
     user_id: { 
         type: DataTypes.INTEGER,
         references: {
@@ -44,7 +46,10 @@ const Event = sequelize.define('event', {
     });
   
 
+   
 
+   
+    
 
  export default Event;
 

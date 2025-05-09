@@ -1,13 +1,9 @@
 import { DataTypes } from 'sequelize';
 import { sequelize } from '../dataBase/db.js';
-import Parent from './parents.js';
+
+
 
 const User = sequelize.define('user', {
-  id: {
-    type: DataTypes.INTEGER,
-    primaryKey: true,
-    autoIncrement: true,  
-  },
   first_name: {
     type: DataTypes.STRING,
     allowNull: false
@@ -27,7 +23,12 @@ const User = sequelize.define('user', {
   },
   role: {
     type: DataTypes.ENUM('admin', 'parent'),
-    allowNull: false
+    defaultValue:'parent',
+   
+  },
+  image: {
+    type: DataTypes.STRING,
+    allowNull: true // facultatif
   }
 }, {
   tableName: 'Users',  
@@ -35,9 +36,7 @@ const User = sequelize.define('user', {
 });
 
 
-
-// Vérification du modèle pour s'assurer qu'il a été bien défini
-console.log(User === sequelize.models.User); // Affiche true si tout est correct
+ 
 
 
 

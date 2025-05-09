@@ -33,7 +33,7 @@ const Children = sequelize.define('children', {
     allowNull: false,
   },
   gender :{
-    type: DataTypes.ENUM ('F', 'G'),
+    type: DataTypes.ENUM ('F', 'M'),
     allowNull: false,
   }
 
