@@ -3,6 +3,7 @@ import Parent from '../models/parents.js';
 import User from '../models/users.js';
 
 
+
 export const getAllParents = async (req, res) => {
     try{
         const parents = await Parent.findAll();
@@ -17,29 +18,44 @@ export const getAllParents = async (req, res) => {
     }
 
 };
-export const getParentProfile = async (req,res) => {
-    
-    //console.log(req)
-    console.log(req.user.id)
-    const {id} = req.user
+export const getParentProfile = async (req, res) => {
+    const { id } = req.user; 
+    console.log("User ID from token:", id);
+
     try {
+        // Utilisation de findOne avec les critères 'where' et l'option 'attributes' pour exclure le champ 'password'
+        const userWithParent = await User.findOne({
+            where: { id },
+            include: [
+              {
+                model: Parent,
+                as: 'parentDetails' 
+                //attributes: ['address', 'phone'], 
+              }
+            ],
+            attributes: { exclude: ['password', 'role'] }
+                
+        });
 
-        const userByID = await Parent.findById(id).select ('-password');
-        console.log(userByID)
-        if (!userByID){
-            return res.status(404).json({message: 'User not found'})
+        console.log(userWithParent);
+
+        // Vérifier si l'utilisateur existe
+        if (!userWithParent) {
+            return res.status(404).json({ message: 'User not found' });
         }
-        return res.status(200).json (userByID);
-        
 
-    } catch (err){
+        // Retourner les données du parent
+        return res.status(200).json(userWithParent);
+
+    } catch (err) {
         console.log(err);  
-      return res.status(500).json({ message: 'Internal server error' }); 
-
+        return res.status(500).json({ message: 'Internal server error' });
     }
+};
+
     
 
-}
+
 /*
 export const getParentsByID = async (req,res) => {
     const {id}= req.params;
@@ -64,7 +80,7 @@ export const addParent = async (req, res) => {
     const { user_id, address, phone } = req.body;
   
     try {
-      // Vérifier si l'utilisateur existe dans la table `users`
+      // Vérifier si l'utilisateur existe dans la table `Users`
       const userExists = await User.findByPk(user_id);
       if (!userExists) {
         return res.status(404).json({ message: 'User with this ID already exists' });
