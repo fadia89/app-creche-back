@@ -1,6 +1,7 @@
-import { request } from 'express';
+
 import User from '../models/users.js';
-//import authRouter from '../routes/authRouter.js';
+
+
 
 
 export const getAllUsers = async (req, res) => {
@@ -59,21 +60,24 @@ export const getUsersByRole = async (req, res) => {
   }
 };
 
-export const addUser = async (req, res) => {
-    //console.log (req.body)
-    const { first_Name,last_Name, email, password, role} = req.body
-    
-    try{
-        const newUser= await User.create(req.body)
-        return res.status(200).json(newUser)
+export const getUsersProfile = async (req, res) => {
+  const {id} = req.user
 
+  try{
+    const userByID = await User.findByPk(id, {
+      attributes: { exclude: ['password'] } 
+    });
+    if (!userByID) {
+      return res.status(404).json('User not found');
     }
-    catch (err){
-        console.log(err)
-        return res.status(500).json({message: 'Internal server error'});
-    }
-    
-};
+    return res.status(200).json(userByID);
+
+  } catch (err){
+    console.log(err);  
+        return res.status(500).json({ message: 'Internal server error' }); 
+  }
+ };
+
  export const deleteUserByID = async (req, res) => {
     const {id} = req.params ;
     try{
@@ -91,30 +95,33 @@ export const addUser = async (req, res) => {
     }
 
  };
- export const updateUserByID = async (req,res) => {
-    const {id} = req.params;
-    const {first_Name, last_Name, email, password, role} = req.body;
-    try{
-        const userByID = await User.findByPk(id);
-        if (!userByID){
-            return res.status(404).json({messages: 'User not found'});
-        }
-          // Mettre à jour uniquement les champs envoyés dans la requête
-        const updatedUser = await userByID.update({
-            first_Name: first_Name || userByID.first_name,
-            last_Name: last_Name || userByID.last_name,
-            email: email || userByID.email,
-            password: password || userByID.password,
-            role: role || userByID.role,
-        });
-        return res.status(200).json({message: 'User successfully updated', user: updatedUser});
+ export const updateUser = async (req, res) => {
+  const { first_Name, last_Name, email, password, role } = req.body;
+  const id = req.user.id; // ✔ Récupération depuis le token via middleware
 
+  try {
+    const user = await User.findByPk(id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
     }
-    catch(err) {
-        console.log(err);
-        return res.status(500).json({message: 'Internal server error'});
-    }
- };
+
+    const updatedUser = await user.update({
+      first_name: first_Name || user.first_name,
+      last_name: last_Name || user.last_name,
+      email: email || user.email,
+      password: password || user.password,
+      role: role || user.role,
+      image: req.file ? '/public/images/' + req.file.filename : user.image
+    });
+
+    return res.status(200).json({ message: 'User successfully updated', user: updatedUser });
+
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
     
  
 
