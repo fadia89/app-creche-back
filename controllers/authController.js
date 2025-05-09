@@ -3,7 +3,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import User from '../models/users.js';
 import { Router } from 'express';
-import verifyUserFields from '../middlewares/verifyUserFields.js';
+
 
  const authRouter = Router();
  const JWT_SECRET = process.env.JWT_SECRET;
@@ -14,9 +14,9 @@ import verifyUserFields from '../middlewares/verifyUserFields.js';
 
     try {
         // Vérification de l'existence de l'email
-        const verifyEmail = await User.findOne({ where: { email } });
+        const existingUser = await User.findOne({ where: { email } });
 
-        if (verifyEmail) {
+        if (existingUser) {
             return res.status(409).json({ message: 'Email already taken' });
         }
 
@@ -25,16 +25,15 @@ import verifyUserFields from '../middlewares/verifyUserFields.js';
         const hashedPassword = await bcrypt.hash(password, salt);
 
         // Création du nouvel utilisateur
-        const newUser = new User({
+        const newUser = await User.create({
             first_name,
             last_name,
             email,
             password: hashedPassword,
             role,
+            image: req.file ? '/public/images/' + req.file.filename : '/public/images/par_defaut.jpg'
         });
 
-        // Sauvegarde de l'utilisateur dans la base de données
-        await newUser.save();
 
         // Retour de la réponse avec succès
         return res.status(201).json({
@@ -49,7 +48,7 @@ import verifyUserFields from '../middlewares/verifyUserFields.js';
         });
 
     } catch (err) {
-        console.error(err);  
+        console.error('Error creating user:', err);
         return res.status(500).json({ message: 'Internal server error' });
     }
 };
@@ -60,7 +59,9 @@ import verifyUserFields from '../middlewares/verifyUserFields.js';
     try{
 
         const user = await User.findOne({ where: { email } });
-        console.log(email)
+        
+
+        
         if (!user){
             return res.status(401).json({ message: 'Email or password invalid' }); 
         }
@@ -69,7 +70,7 @@ import verifyUserFields from '../middlewares/verifyUserFields.js';
         if (!comparePassword){
             return res.status(401).json({ message: 'Email or password invalid' }); 
         }
-        const token = await jwt.sign({ id: user._id}, JWT_SECRET);
+        const token = await jwt.sign({id: user.id, role: user.role}, JWT_SECRET, { expiresIn: '1h' });
         return res.status(200).json({ message: `Welcome ${user.first_name}`, token });
   
   
