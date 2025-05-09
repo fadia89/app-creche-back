@@ -8,9 +8,9 @@ import User from "../models/users.js";
     
 
     // Vérification que tous les champs nécessaires sont présents
-    if (!first_name || !last_name || !email || !password || !role) {
+    if (!first_name || !last_name || !email || !password ) {
       return res.status(400).json({
-        message: 'All fields (first_name, last_name, email, password, role) are required',
+        message: 'All fields (first_name, last_name, email, password) are required',
       });
     }
 
