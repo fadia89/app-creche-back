@@ -7,13 +7,13 @@ const eventsRouter = Router();
 
 eventsRouter.get('/events', getAllEvents );
 
-eventsRouter.get('/events/:id', getEventByID );
+eventsRouter.get('/event/:id', getEventByID );
 
-eventsRouter.post('/events', verifyEventFields,addEvent );
+eventsRouter.post('/event', addEvent );
 
-eventsRouter.patch('/events/:id',updateEvent );
+eventsRouter.patch('/event/:id',updateEvent );
 
-eventsRouter.delete('/events/:id',deleteEventByID );
+eventsRouter.delete('/event/:id',deleteEventByID);
 
 
 export default eventsRouter;
