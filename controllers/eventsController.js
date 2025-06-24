@@ -2,128 +2,150 @@ import Event from "../models/events.js";
 import User from "../models/users.js";
 
 
-
-
-
 export const getAllEvents = async (req, res) => {
     try {
-      const events = await Event.findAll({
-         include: [
-            {
-              model: User,  
-              as:'user',
-              attributes: { exclude: ['password'] } 
-            }
-          ]  
-      });
-  
-      if (events.length < 1) {
-        return res.status(404).json({ message: 'No event found' });
-      }
-  
-      return res.status(200).json(events);
+        const events = await Event.findAll({
+            include: [
+                {
+                    model: User,
+                    attributes: { exclude: ['password'] },
+                    through: { attributes: [] },  // pour ne pas renvoyer la table pivot
+                    attributes: ['id', 'first_name', 'last_name']
+                }
+            ]
+        });
+
+        if (events.length < 1) {
+            return res.status(404).json({ message: 'No event found' });
+        }
+
+        return res.status(200).json(events);
     } catch (err) {
-      console.log(err);
-      return res.status(500).json({ message: 'Internal server error' });
+        console.log(err);
+        return res.status(500).json({ message: 'Internal server error' });
     }
-  };
-  
+};
+
 
 export const getEventByID = async (req, res) => {
-    const {id} = req.params;
-    try{
+    const { id } = req.params;
+    try {
         const eventByID = await Event.findByPk(id);
-        if (!eventByID){
-            return res.status(404).json({messages: 'Event not found'});
+        if (!eventByID) {
+            return res.status(404).json({ messages: 'Event not found' });
         }
         return res.status(200).json(eventByID);
     }
-    catch (err){
-        console.log (err)
-        return res.status(500).json({message: 'Internal server error'}); 
+    catch (err) {
+        console.log(err)
+        return res.status(500).json({ message: 'Internal server error' });
     }
-
-
 };
 
 export const addEvent = async (req, res) => {
-    const { name, event_date, location, description, duration, quota, user_id } = req.body;
+    const { name, event_date, location, description, duration, quota, user_ids } = req.body;
 
     try {
         // Convertir event_date en objet Date
-        const eventDate = new Date(event_date);  
-        // Vérification si un événement avec le même nom et la même date existe déjà
+        const eventDate = new Date(event_date);
         const existingEvent = await Event.findOne({
             where: {
                 name: name,
-                event_date: eventDate 
+                event_date: eventDate
             }
         });
 
-        // Si l'événement existe déjà, renvoyer un message d'erreur
         if (existingEvent) {
             return res.status(400).json({ message: 'An event with the same name and date already exists.' });
         }
-
-        // Si l'événement n'existe pas, on peut créer le nouvel événement
         const newEvent = await Event.create({
             name,
             event_date: eventDate,
             location,
             description,
-            duration,
+            duration: duration *3600,
             quota,
-            user_id
+
         });
-
-        return res.status(201).json(newEvent);  
-
+        // Associer les utilisateurs si user_ids 
+        if (Array.isArray(user_ids) && user_ids.length > 0) {
+            await newEvent.addUsers(user_ids);
+        }
+        const result = await Event.findByPk(newEvent.id, {
+            include: [{ model: User, as: 'users' }]
+        });
+        return res.status(201).json(result);
     } catch (err) {
-        console.log(err);  
-        return res.status(500).json({ message: 'Internal server error' });  
+        console.log(err);
+        return res.status(500).json({ message: 'Internal server error' });
     }
 };
 
 export const updateEvent = async (req, res) => {
-    const {id} = req.params;
-    const{name,event_date,location,description,duration} = req.body;
-    try{
-        const eventByID = await Event.findByPk(id);
-        //console.log(eventByID)
-        if(!eventByID){
-            return res.status(404).json({messages: 'Event not found'});  
-        }
-        const updateEvent = await eventByID.update({
-            name: name || eventByID.name,
-            event_date: event_date || eventByID.event_date,
-            location: location || eventByID.location,
-            description: description || eventByID.description,
-            duration: duration || eventByID.duration
-        })
-        return res.status(200).json({message: 'Event successfully updated', event: updateEvent});
+  const { id } = req.params;
+  const {
+    name,
+    description,
+    event_date,
+    quota,
+    location,
+    duration,
+    user_ids,
+  } = req.body;
 
-    } catch(err) {
-        console.log(err);
-        return res.status(500).json({ message: 'Internal server error' });
+  try {
+    const event = await Event.findByPk(id, {
+      include: ['users'], // ou { model: User, as: 'users' } selon ta config
+    });
 
+    if (!event) {
+      return res.status(404).json({ message: 'Event not found' });
     }
 
+    // Mise à jour des champs simples
+    const eventUpdate = await event.update({
+      name: name ?? event.name,
+      description: description ?? event.description,
+      event_date: event_date ?? event.event_date,
+      quota: quota ?? event.quota,
+      location: location ?? event.location,
+      duration: duration ?? event.duration,
+    });
+
+    // ✅ Corrigé ici : attente de l'association many-to-many
+    if (Array.isArray(user_ids)) {
+      await eventUpdate.setUsers(user_ids); // Sequelize met à jour la table pivot
+    }
+
+    // Recharge l'événement avec ses relations mises à jour
+    const updatedEvent = await Event.findByPk(id, {
+      include: ['users'],
+    });
+
+    return res.status(200).json(updatedEvent);
+  } catch (err) {
+    console.error('Erreur lors de la mise à jour de l’événement:', err);
+    return res.status(500).json({ message: 'Internal server error' });
+  }
 };
 
-export const deleteEventByID = async (req,res) => {
-    const {id} = req.params;
+
+
+
+export const deleteEventByID = async (req, res) => {
+    const { id } = req.params;
     console.log(id);
-    try{
+    try {
         const eventByID = await Event.findByPk(id);
-        if (!eventByID){
-            return res.status(404).json({messages: 'Event not found'})
+        if (!eventByID) {
+            return res.status(404).json({ messages: 'Event not found' })
         }
         await eventByID.destroy();
-        return res.status(200).json({messages :'Event successfully deleted'})
+        return res.status(200).json({ messages: 'Event successfully deleted' })
 
-    } catch(err) {
-        console.log (err)
-        return res.status(500).json({message: 'Internal server error'});   
+    } catch (err) {
+        console.log(err)
+        return res.status(500).json({ message: 'Internal server error' });
     }
 
 };

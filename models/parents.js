@@ -1,8 +1,5 @@
 import { DataTypes } from 'sequelize';
 import { sequelize } from '../dataBase/db.js';
-import User from './users.js';
-import Children from './childrens.js';
-
 
 
 const Parent = sequelize.define('parent', {

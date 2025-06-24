@@ -3,11 +3,7 @@ import { sequelize } from '../dataBase/db.js';
 import Parent from './parents.js';
 
 const User = sequelize.define('user', {
-  id: {
-    type: DataTypes.INTEGER,
-    primaryKey: true,
-    autoIncrement: true,  
-  },
+
   first_name: {
     type: DataTypes.STRING,
     allowNull: false
@@ -25,19 +21,23 @@ const User = sequelize.define('user', {
     type: DataTypes.STRING,
     allowNull: false
   },
+  image: {
+    type: DataTypes.STRING,
+    allowNull: true,
+    defaultValue: '/public/images/par_defaut.jpg',
+  },
   role: {
     type: DataTypes.ENUM('admin', 'parent'),
     allowNull: false
   }
 }, {
-  tableName: 'Users',  
+  tableName: 'Users',
   timestamps: false  // Pour les colonnes gérers automatiqument par Sequelize: createdAt et updatedAt
 });
 
 
 
-// Vérification du modèle pour s'assurer qu'il a été bien défini
-console.log(User === sequelize.models.User); // Affiche true si tout est correct
+
 
 
 

@@ -1,19 +1,21 @@
 import { Router } from "express";
 import { addEvent, getAllEvents, getEventByID, updateEvent, deleteEventByID } from "../controllers/eventsController.js";
 import verifyEventFields from "../middlewares/verifyEventFields.js";
+import verifyAdmin from "../middlewares/verifyAdmin.js";
+
 
 
 const eventsRouter = Router();
 
-eventsRouter.get('/events', getAllEvents );
+eventsRouter.get('/events',getAllEvents );
 
-eventsRouter.get('/event/:id', getEventByID );
+eventsRouter.get('/events/:id', verifyAdmin,getEventByID );
 
-eventsRouter.post('/event', addEvent );
+eventsRouter.post('/events', verifyAdmin,verifyEventFields,addEvent );
 
-eventsRouter.patch('/event/:id',updateEvent );
+eventsRouter.patch('/events/:id',verifyAdmin,updateEvent );
 
-eventsRouter.delete('/event/:id',deleteEventByID);
+eventsRouter.delete('/events/:id',verifyAdmin,deleteEventByID);
 
 
 export default eventsRouter;

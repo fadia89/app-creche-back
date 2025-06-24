@@ -3,6 +3,11 @@ import { sequelize } from "../dataBase/db.js";
 import Parent from "./parents.js";
 
 const Children = sequelize.define('children', {
+  /*   id: {                                
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true,
+  }, */
   parent_id: {
     type: DataTypes.INTEGER,
     allowNull: false,

@@ -1,11 +1,15 @@
-import express from 'express';
+
 import { Router } from 'express';
-//import getAdmin from '../controllers/adminController.js'
+import verifyAdmin from '../middlewares/verifyAdmin.js';
+import { getAdmins, getAdminsMany } from '../controllers/adminsControlleurs.js';
+
 
 
 const adminRouter = Router();
 
-// Route protégée par le middleware de rôle
-//adminRouter.get('/admin', verifyRole(['admin']), getAdmin);
+
+adminRouter.get('/admins', verifyAdmin, getAdmins);
+
+adminRouter.post('/admins/many', verifyAdmin, getAdminsMany);
 
 export default adminRouter;

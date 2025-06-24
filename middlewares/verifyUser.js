@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 
  
 const verifyUser = async (req, res, next) => {
-  // Récupération du token depuis les headers Authorization
+  
   const token = req.headers.authorization?.split(' ')[1];
   //console.log("Token reçu:", token);
 
@@ -13,7 +13,6 @@ const verifyUser = async (req, res, next) => {
   }
 
   try {
-    // Décodage du token
     const decoded = jwt.verify(token, JWT_SECRET);
     console.log("Données du token décodé:", decoded);
 
@@ -27,7 +26,7 @@ const verifyUser = async (req, res, next) => {
     req.user = { id, role };
     console.log("Utilisateur injecté dans req.user:", req.user);
 
-    next(); // passe au middleware ou au contrôleur suivant
+    next(); 
 
   } catch (error) {
     if (error instanceof jwt.TokenExpiredError) {
