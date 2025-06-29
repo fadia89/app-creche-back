@@ -13,7 +13,7 @@ const parentsRouter = Router()
 
 
 
-parentsRouter.get ('/parents', getAllParents);
+parentsRouter.get ('/parents',verifyAdmin, getAllParents);
 
 //parentsRouter.get ('/parents/:id',getParentsByID);
 parentsRouter.get('/profile',verifyUser,getParentProfile);
@@ -26,7 +26,7 @@ parentsRouter.patch('/parents/:id', verifyAdmin,updateParent);
 
 parentsRouter.patch('/profile', verifyUser,upload.single('image'), checkProfileEdit,updateProfile);
 
-parentsRouter.delete('/parents/:id', deleteParentByID);
+parentsRouter.delete('/parents/:id', verifyAdmin,deleteParentByID);
 
 
 

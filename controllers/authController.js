@@ -29,7 +29,7 @@ export const createUser = async (req, res) => {
             email,
             password: hashedPassword,
             role,
-            image: req.file ? '/public/images/' + req.file.filename : '/public/images/par_defaut.jpg'
+            image: req.file ? '/images/' + req.file.filename : '/images/par_default.jpg'
         });
 
         const token = jwt.sign(

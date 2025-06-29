@@ -53,7 +53,28 @@ export const getDocumentById = async (req, res) => {
     return res.status(500).json({ message: 'Internal server error' });
   }
 };
+export const getParentDocument = async (req, res) => {
+  try {
+    const user_id = req.user.id;
 
+    //  Retrieve parent associated with this user
+    const parent = await Parent.findOne({ where: { user_id } });
+
+    if (!parent) {
+      return res.status(404).json({ message: "Parent not found for this user" });
+    }
+
+    //  Utiliser parent.id pour récupérer les documents
+    const documents = await Document.findAll({
+      where: { parent_id: parent.id }
+    });
+
+    return res.status(200).json(documents);
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Erreur serveur" });
+  }
+};
 
 export const addDocument = async (req, res) => {
   const file = req.file;
