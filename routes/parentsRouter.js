@@ -18,6 +18,8 @@ parentsRouter.get ('/parents',verifyAdmin, getAllParents);
 //parentsRouter.get ('/parents/:id',getParentsByID);
 parentsRouter.get('/profile',verifyUser,getParentProfile);
 
+
+//This route is primarily used by react-admin to load data referenced in forms (such as SelectInputs bound to an parent_id).
 parentsRouter.post('/parents/many',verifyAdmin,getManyParent);
 
 parentsRouter.post('/parents', verifyAdmin,createParent);

@@ -63,7 +63,7 @@ export const addEvent = async (req, res) => {
             event_date: eventDate,
             location,
             description,
-            duration: duration *3600,
+            duration: duration * 3600,
             quota,
 
         });
@@ -81,52 +81,68 @@ export const addEvent = async (req, res) => {
     }
 };
 
+export const getManyEvents = async (req, res) => {
+    try {
+        const { ids } = req.body;
+        const events = await Event.findAll({
+            where: {
+                id: ids
+            }
+        });
+
+        return res.status(200).json(events);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
 export const updateEvent = async (req, res) => {
-  const { id } = req.params;
-  const {
-    name,
-    description,
-    event_date,
-    quota,
-    location,
-    duration,
-    user_ids,
-  } = req.body;
+    const { id } = req.params;
+    const {
+        name,
+        description,
+        event_date,
+        quota,
+        location,
+        duration,
+        user_ids,
+    } = req.body;
 
-  try {
-    const event = await Event.findByPk(id, {
-      include: ['users'], // ou { model: User, as: 'users' } selon ta config
-    });
+    try {
+        const event = await Event.findByPk(id, {
+            include: ['users'], // ou { model: User, as: 'users' } selon ta config
+        });
 
-    if (!event) {
-      return res.status(404).json({ message: 'Event not found' });
+        if (!event) {
+            return res.status(404).json({ message: 'Event not found' });
+        }
+
+        // Mise à jour des champs simples
+        const eventUpdate = await event.update({
+            name: name ?? event.name,
+            description: description ?? event.description,
+            event_date: event_date ?? event.event_date,
+            quota: quota ?? event.quota,
+            location: location ?? event.location,
+            duration: duration ?? event.duration,
+        });
+
+        // ✅ Corrigé ici : attente de l'association many-to-many
+        if (Array.isArray(user_ids)) {
+            await eventUpdate.setUsers(user_ids); // Sequelize met à jour la table pivot
+        }
+
+        // Recharge l'événement avec ses relations mises à jour
+        const updatedEvent = await Event.findByPk(id, {
+            include: ['users'],
+        });
+
+        return res.status(200).json(updatedEvent);
+    } catch (err) {
+        console.error('Erreur lors de la mise à jour de l’événement:', err);
+        return res.status(500).json({ message: 'Internal server error' });
     }
-
-    // Mise à jour des champs simples
-    const eventUpdate = await event.update({
-      name: name ?? event.name,
-      description: description ?? event.description,
-      event_date: event_date ?? event.event_date,
-      quota: quota ?? event.quota,
-      location: location ?? event.location,
-      duration: duration ?? event.duration,
-    });
-
-    // ✅ Corrigé ici : attente de l'association many-to-many
-    if (Array.isArray(user_ids)) {
-      await eventUpdate.setUsers(user_ids); // Sequelize met à jour la table pivot
-    }
-
-    // Recharge l'événement avec ses relations mises à jour
-    const updatedEvent = await Event.findByPk(id, {
-      include: ['users'],
-    });
-
-    return res.status(200).json(updatedEvent);
-  } catch (err) {
-    console.error('Erreur lors de la mise à jour de l’événement:', err);
-    return res.status(500).json({ message: 'Internal server error' });
-  }
 };
 
 
