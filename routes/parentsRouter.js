@@ -1,6 +1,5 @@
 import { Router } from "express";
-import { deleteParentByID, getAllParents, getParentProfile, updateProfile, createParent, getManyParent, updateParent} from "../controllers/parentsController.js";
-import verifyParentFields from "../middlewares/verifyParentFields.js";
+import { deleteParentByID, getAllParents, getParentProfile, updateProfile, createParent, getManyParent, updateParent,getParentsByID } from "../controllers/parentsController.js";
 import verifyUser from "../middlewares/verifyUser.js";
 import {upload} from '../middlewares/uploadFile.js'
 import checkProfileEdit from "../middlewares/checkProfileEdit.js";
@@ -15,7 +14,8 @@ const parentsRouter = Router()
 
 parentsRouter.get ('/parents',verifyAdmin, getAllParents);
 
-//parentsRouter.get ('/parents/:id',getParentsByID);
+parentsRouter.get('/parents/:id', verifyAdmin,getParentsByID);
+
 parentsRouter.get('/profile',verifyUser,getParentProfile);
 
 

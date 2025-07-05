@@ -31,11 +31,13 @@ export const getActivitiesByID = async (req, res) => {
     const { id } = req.params;
 
     try {
+        //// Fetch the activity by its primary key (id), including related models:
+        // - Associated events with selected attributes.
+        // - Associated children with selected attributes.
         const activity = await Activity.findByPk(id, {
             include: [
                 {
                     model: Event,
-
                     attributes: ['id', 'name', 'description', 'event_date']
                 },
                 {
@@ -146,6 +148,7 @@ export const deleteActivitie = async (req, res) => {
 
     try {
 
+        // Searches for a specific activity in the database based on its primary key (ID).
         const activity = await Activity.findByPk(id);
 
         if (!activity) {
@@ -154,7 +157,7 @@ export const deleteActivitie = async (req, res) => {
 
         await activity.destroy({ where: { id } });
 
-        return res.status(200).json({ message: 'Activity deleted successfully' });  // Retourne un message de succès
+        return res.status(200).json({ message: 'Activity deleted successfully' });
 
     } catch (err) {
         console.error(err);

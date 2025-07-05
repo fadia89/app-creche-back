@@ -3,11 +3,7 @@ import { sequelize } from "../dataBase/db.js";
 import Parent from "./parents.js";
 
 const Children = sequelize.define('children', {
-  /*   id: {                                
-    type: DataTypes.INTEGER,
-    primaryKey: true,
-    autoIncrement: true,
-  }, */
+ 
   parent_id: {
     type: DataTypes.INTEGER,
     allowNull: false,
@@ -15,7 +11,7 @@ const Children = sequelize.define('children', {
       model: 'Parent', 
       key: 'id'            
     },
-    onDelete: 'CASCADE'    // Si un parent est supprimé, l'enfant sera aussi supprimé
+    onDelete: 'CASCADE'    // If a parent is deleted, the child will also be deleted
   },
   first_name: {
     type: DataTypes.STRING,

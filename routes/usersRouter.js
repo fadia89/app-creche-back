@@ -13,6 +13,7 @@ usersRouter.get ('/users/:id', verifyAdmin,getUserByID);
 
 usersRouter.get('/users/role/:role', verifyAdmin,getUsersByRole);
 
+//For React Admin
 usersRouter.post('/users/many', verifyAdmin,getManyUsers);
 
 usersRouter.post('/users', verifyAdmin,addUser);

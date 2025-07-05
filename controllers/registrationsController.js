@@ -57,7 +57,7 @@ export const addRegistration = async (req, res) => {
     try {
         const { parent_id, children_id } = req.body;
 
-        // Récupérer le parent
+        // Retrieve the parent
         const parent = await Parent.findOne({ where: { id: parent_id } });
 
         if (!parent) {
@@ -66,7 +66,7 @@ export const addRegistration = async (req, res) => {
 
         const user_id = parent.user_id;
 
-        // Créer la registration
+        // Create the registration
         const newRegistration = await Registration.create({
             registration_date: new Date(),
             status: 'Pending',
@@ -76,9 +76,9 @@ export const addRegistration = async (req, res) => {
         });
 
         res.status(201).json(newRegistration);
-    } catch (error) {
-        console.error("Erreur lors de la création de l'inscription:", error);
-        res.status(500).json({ message: error.message });
+    } catch (err) {
+        console.err(err);
+        return res.status(500).json({ message: 'Internal server error' });
     }
 };
 
@@ -86,6 +86,7 @@ export const updateRegistration = async (req, res) => {
     const { id } = req.params;
     const { registration_date, status, parent_id, children_id } = req.body;
     const allowedStatuses = ['pending', 'accepted', 'rejected'];
+    // Validate that the provided status is one of the allowed values.
     if (!allowedStatuses.includes(status)) {
         return res.status(400).json({ message: 'Invalid status value' });
     }

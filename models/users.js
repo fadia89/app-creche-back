@@ -32,7 +32,7 @@ const User = sequelize.define('user', {
   }
 }, {
   tableName: 'Users',
-  timestamps: false  // Pour les colonnes gérers automatiqument par Sequelize: createdAt et updatedAt
+  timestamps: false  
 });
 
 

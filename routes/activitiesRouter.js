@@ -20,7 +20,7 @@ activitiesRouter.get('/my-activities', verifyUser, getChildActivities);
 
 activitiesRouter.post ('/activities', verifyAdmin,upload.single('image'), addActivity);
 
-activitiesRouter.patch('/activities/:id', verifyAdmin,upload.single('images',10),updateActivitie);
+activitiesRouter.patch('/activities/:id', verifyAdmin,upload.single('image'),updateActivitie);
 
 activitiesRouter.delete('/activities/:id',verifyAdmin, deleteActivitie);
 

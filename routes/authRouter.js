@@ -1,5 +1,5 @@
 import { Router } from "express";
-import verifyUserFields from "../middlewares/verifyUserFields.js";
+import verifyUserFields from "../middlewares/verifyUserFields.js"
 import { createUser, loginUser } from "../controllers/authController.js";
 import { upload } from "../middlewares/uploadFile.js";
 

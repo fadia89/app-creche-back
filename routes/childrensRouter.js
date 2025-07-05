@@ -12,6 +12,7 @@ childrensRouter.get('/childrens/:id',verifyAdmin, getChildrenByID);
 
 childrensRouter.post ('/childrens',verifyAdmin,verifyChildrenFields, addChildren);
 
+//For React Admin
 childrensRouter.post ('/childrens/many',verifyAdmin, getManyChildren);
 
 childrensRouter.delete ('/childrens/:id',verifyAdmin, deleteChildren);

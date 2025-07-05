@@ -40,7 +40,7 @@ event_id: {
   },
 }, {
   tableName: 'Activities',  
-  timestamps: false        
+  timestamps: false    // For columns managed automatically by Sequelize: createdAt and updatedAt    
 });
 
 export default Activity;

@@ -6,7 +6,7 @@ import jwt from 'jsonwebtoken';
 const verifyUser = async (req, res, next) => {
   
   const token = req.headers.authorization?.split(' ')[1];
-  //console.log("Token reçu:", token);
+ 
 
   if (!token) {
     return res.status(401).json({ error: "Access refused: no token provided" });
@@ -14,7 +14,7 @@ const verifyUser = async (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
-    console.log("Données du token décodé:", decoded);
+    //console.log("Données du token décodé:", decoded);
 
     const { id, role } = decoded;
 
@@ -22,7 +22,7 @@ const verifyUser = async (req, res, next) => {
       return res.status(401).json({ error: "Invalid token: missing user ID or role" });
     }
 
-    // Injecte id et role dans req.user
+    // Inject id and role into req.user
     req.user = { id, role };
     console.log("Utilisateur injecté dans req.user:", req.user);
 

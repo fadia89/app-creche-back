@@ -9,12 +9,12 @@ export const getAllEvents = async (req, res) => {
                 {
                     model: User,
                     attributes: { exclude: ['password'] },
-                    through: { attributes: [] },  // pour ne pas renvoyer la table pivot
+                    // through: { attributes: [] },  // pour ne pas renvoyer la table pivot
                     attributes: ['id', 'first_name', 'last_name']
                 }
             ]
         });
-
+        // Check if the events  is empty
         if (events.length < 1) {
             return res.status(404).json({ message: 'No event found' });
         }
@@ -63,11 +63,11 @@ export const addEvent = async (req, res) => {
             event_date: eventDate,
             location,
             description,
-            duration: duration * 3600,
+            duration  ,//: duration * 3600,
             quota,
 
         });
-        // Associer les utilisateurs si user_ids 
+        // // If user_ids is a non-empty array, associate these users with the new event
         if (Array.isArray(user_ids) && user_ids.length > 0) {
             await newEvent.addUsers(user_ids);
         }
@@ -81,6 +81,7 @@ export const addEvent = async (req, res) => {
     }
 };
 
+//// Retrieve multiple events based on an array of event IDs sent in the request body for React Admin
 export const getManyEvents = async (req, res) => {
     try {
         const { ids } = req.body;
@@ -91,23 +92,15 @@ export const getManyEvents = async (req, res) => {
         });
 
         return res.status(200).json(events);
-    } catch (error) {
-        console.error(error);
+    } catch (err) {
+        console.error(err);
         res.status(500).json({ message: 'Internal server error' });
     }
 };
 
 export const updateEvent = async (req, res) => {
     const { id } = req.params;
-    const {
-        name,
-        description,
-        event_date,
-        quota,
-        location,
-        duration,
-        user_ids,
-    } = req.body;
+    const { name, description, event_date, quota, location, duration, user_ids, } = req.body;
 
     try {
         const event = await Event.findByPk(id, {
@@ -118,7 +111,9 @@ export const updateEvent = async (req, res) => {
             return res.status(404).json({ message: 'Event not found' });
         }
 
-        // Mise à jour des champs simples
+
+        // Mettre à jour les champs d'événement avec de nouvelles valeurs si elles sont fournies ; 
+        // sinon, conserver les valeurs existantes pour éviter de les écraser avec undefined ou null.
         const eventUpdate = await event.update({
             name: name ?? event.name,
             description: description ?? event.description,
@@ -128,24 +123,22 @@ export const updateEvent = async (req, res) => {
             duration: duration ?? event.duration,
         });
 
-        // ✅ Corrigé ici : attente de l'association many-to-many
+        // If user_ids is an array, update the event's associated users by setting the new list.
+        // This replaces the current users linked to the event with the provided user_ids.
         if (Array.isArray(user_ids)) {
-            await eventUpdate.setUsers(user_ids); // Sequelize met à jour la table pivot
+            await eventUpdate.setUsers(user_ids);
         }
 
-        // Recharge l'événement avec ses relations mises à jour
         const updatedEvent = await Event.findByPk(id, {
             include: ['users'],
         });
 
         return res.status(200).json(updatedEvent);
     } catch (err) {
-        console.error('Erreur lors de la mise à jour de l’événement:', err);
+        console.error( err);
         return res.status(500).json({ message: 'Internal server error' });
     }
 };
-
-
 
 
 export const deleteEventByID = async (req, res) => {
@@ -160,7 +153,7 @@ export const deleteEventByID = async (req, res) => {
         return res.status(200).json({ messages: 'Event successfully deleted' })
 
     } catch (err) {
-        console.log(err)
+        console.error(err)
         return res.status(500).json({ message: 'Internal server error' });
     }
 

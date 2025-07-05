@@ -6,7 +6,7 @@ import User from '../models/users.js';
 export const getAllDocuments = async (req, res) => {
   try {
     const documents = await Document.findAll({
-      
+
       include: {
         model: Parent,
         include: {
@@ -53,6 +53,8 @@ export const getDocumentById = async (req, res) => {
     return res.status(500).json({ message: 'Internal server error' });
   }
 };
+
+// Fetch documents associated with the logged-in parent user
 export const getParentDocument = async (req, res) => {
   try {
     const user_id = req.user.id;
@@ -64,7 +66,7 @@ export const getParentDocument = async (req, res) => {
       return res.status(404).json({ message: "Parent not found for this user" });
     }
 
-    //  Utiliser parent.id pour récupérer les documents
+    //  Use parent.id to retrieve documents
     const documents = await Document.findAll({
       where: { parent_id: parent.id }
     });
@@ -79,8 +81,6 @@ export const getParentDocument = async (req, res) => {
 export const addDocument = async (req, res) => {
   const file = req.file;
   const { type, uploaded_by, parent_id } = req.body;
-  console.log('Body:', req.body);
-  console.log('File:', req.file);
   if (!file) {
     return res.status(400).json({ message: 'No files sent.' });
   }
@@ -89,7 +89,7 @@ export const addDocument = async (req, res) => {
     return res.status(400).json({ message: 'Parent ID is required' });
   }
   try {
-
+    //// Check if a document with the same file name already exists in the database
     const existingDoc = await Document.findOne({
       where: { file_name: file.originalname }
     });
@@ -128,20 +128,19 @@ export const deleteDocument = async (req, res) => {
     if (!doc) {
       return res.status(404).json({ message: 'Document not found.' });
     }
-
     await doc.destroy();
 
     return res.status(200).json({ message: 'Document deleted successfully.' });
 
   } catch (err) {
     console.error(err);
-    return res.status(500).json({ message: 'Erreur serveur.' });
+    return res.status(500).json({ message: 'Internal server error' });
   }
 };
 
 export const updateDocument = async (req, res) => {
   const { id } = req.params;
-   const { type,  file_name, uploaded_by} = req.body;
+  const { type, file_name, uploaded_by } = req.body;
 
   try {
     const documentByID = await Document.findByPk(id);
@@ -150,9 +149,9 @@ export const updateDocument = async (req, res) => {
       return res.status(404).json({ message: 'Document not found' });
     }
     const updateDocument = await documentByID.update({
-      type:type || documentByID.type,
+      type: type || documentByID.type,
       file_name: file_name || documentByID.file_name,
-      uploaded_by: uploaded_by ||documentByID.uploaded_by
+      uploaded_by: uploaded_by || documentByID.uploaded_by
     });
 
 

@@ -20,7 +20,7 @@ const Document = sequelize.define('document', {
     defaultValue: DataTypes.NOW
   },
   uploaded_by: {
-    type: DataTypes.STRING, // 'admin' ou 'parent'
+    type: DataTypes.STRING, // 'admin' 
     allowNull: false
   },
   parent_id: {

@@ -24,7 +24,7 @@ import pagesRouter from './routes/pagesRouter.js';
 const app = express();
 const PORT = process.env.PORT || 8000;
 
-// Middleware pour gérer les requêtes en JSON
+// Middleware to handle JSON requests
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }))
 

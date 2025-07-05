@@ -40,14 +40,14 @@ export const getParentProfile = async (req, res) => {
           attributes: ['address', 'phone'],
         }
       ],
+      // Exclude sensitive fields like 'password' and 'role' from the query result for security and privacy.
       attributes: { exclude: ['password', 'role'] }
     });
-    console.log("parentDetails:", user.parentDetails);
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    const response = {
+    const parentProfile = {
       id: user.id,
       first_name: user.first_name,
       last_name: user.last_name,
@@ -56,16 +56,15 @@ export const getParentProfile = async (req, res) => {
       address: user.parentDetails?.address || '',
       phone: user.parentDetails?.phone || ''
     };
-    console.log(response)
 
-    return res.status(200).json(response);
+    return res.status(200).json(parentProfile);
 
   } catch (err) {
-    console.log(err);
+    console.err(err);
     return res.status(500).json({ message: 'Internal server error' });
   }
 };
-
+//Pour récupérer plusieurs parents par leurs identifiants for React Admin.
 export const getManyParent = async (req, res) => {
   try {
     const { ids } = req.body;
@@ -82,10 +81,10 @@ export const getManyParent = async (req, res) => {
 
 
 
-/*
+
 export const getParentsByID = async (req,res) => {
     const {id}= req.params;
-    //console.log(id);
+    
     try{
         const parentByID = await Parent.findByPk(id);
         if (!parentByID){
@@ -100,14 +99,13 @@ export const getParentsByID = async (req,res) => {
 
     }
     
-};*/
+};
 
 export const updateProfile = async (req, res) => {
   const { id } = req.user;
   if (!id) {
-    return res.status(400).json({ message: "ID manquant" });
+    return res.status(400).json({ message: "Missing ID" });
   }
-
   const { address, phone, first_name, last_name, email, password } = req.body;
   const image = req.file ? `/images/${req.file.filename}` : null;
 
@@ -120,9 +118,9 @@ export const updateProfile = async (req, res) => {
     if (!parent) return res.status(404).json({ message: 'Parent not found' });
 
     const user = parent.user;
-    if (!user) return res.status(404).json({ message: 'Utilisateur associé non trouvé' });
+    if (!user) return res.status(404).json({ message: 'Associated user not found' });
 
-    // Vérification que au moins un champ est différent
+    // Check that at least one field is different
     const isModified =
       (address && address !== parent.address) ||
       (phone && phone !== parent.phone) ||
@@ -133,13 +131,12 @@ export const updateProfile = async (req, res) => {
       (image && image !== user.image);
 
     if (!isModified) {
-      return res.status(400).json({ message: "Aucune modification détectée" });
+      return res.status(400).json({ message: 'No changes detected.' });
     }
 
-    // Mise à jour seulement des champs modifiés 
+    // Update only modified fields
     await parent.update({
-      ...(address ? { address } : {}), //... décompose un objet dans un autre ,Pour ne mettre à jour que les champs qui ont une valeur et éviter d’écraser par null ou undefined
-      ...(phone ? { phone } : {}),
+      ...(address ? { address } : {}), //... decomposes one object into another, to only update fields that have a value and avoid overwriting with null or undefined.
     });
 
     await user.update({
@@ -150,10 +147,10 @@ export const updateProfile = async (req, res) => {
       ...(image ? { image } : {}),
     });
 
-    return res.status(200).json({ message: 'Profil mis à jour avec succès', parent });
+    return res.status(200).json({ message: 'Profile successfully updated', parent });
 
   } catch (err) {
-    console.error('Erreur de mise à jour :', err);
+    console.error(err);
     return res.status(500).json({ message: 'Internal server error' });
   }
 };
@@ -170,13 +167,12 @@ export const updateParent = async (req, res) => {
 
     const updatedParent = await parent.update({
       address: address || parent.address,
-      phone: phone  || parent.phone,
-      
-    });
+      phone: phone || parent.phone,
 
+    });
     return res.status(200).json(updatedParent);
   } catch (err) {
-    console.error('Error updating parent:', err);
+    console.error(err);
     return res.status(500).json({ message: 'Internal server error' });
   }
 };
@@ -209,8 +205,8 @@ export const createParent = async (req, res) => {
       user_id,
     });
     return res.status(201).json(newParent);
-  } catch (error) {
-    console.error(error);
+  } catch (err) {
+    console.error(err);
     res.status(500).json({ message: 'Internal server error.' });
   }
 };

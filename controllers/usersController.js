@@ -2,8 +2,6 @@ import User from '../models/users.js';
 import bcrypt from 'bcryptjs';
 
 
-
-
 export const getAllUsers = async (req, res) => {
   try {
     const users = await User.findAll();
@@ -59,6 +57,7 @@ export const getUsersByRole = async (req, res) => {
   }
 };
 
+//To retrieve multiple users based on a list of IDs provided in the request body for React Admin.
 export const getManyUsers = async (req, res) => {
 
   try {
@@ -75,7 +74,7 @@ export const getManyUsers = async (req, res) => {
   }
 };
 
-
+//to create a new user for React Admin
 export const addUser = async (req, res) => {
   let { first_name, last_name, email, password, role } = req.body;
 
