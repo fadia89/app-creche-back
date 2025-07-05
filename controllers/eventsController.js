@@ -63,7 +63,7 @@ export const addEvent = async (req, res) => {
             event_date: eventDate,
             location,
             description,
-            duration  ,//: duration * 3600,
+            duration  : duration * 3600,
             quota,
 
         });
