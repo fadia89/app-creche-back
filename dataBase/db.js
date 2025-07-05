@@ -3,6 +3,7 @@ import 'dotenv/config';
 
 const sequelize = new Sequelize(process.env.DATABASE_URL, {
   dialect: 'postgres',
+  protocol: 'postgres',
   dialectOptions: {
     ssl: {
       require: true,
@@ -14,11 +15,11 @@ const sequelize = new Sequelize(process.env.DATABASE_URL, {
 const connectDB = async () => {
   try {
     await sequelize.authenticate();
-    console.log("✅ Successfully connected to sequelizeDB");
+    console.log('✅ Connected to DB');
   } catch (error) {
-    console.error("❌ sequelizeDB connection error:", error);
-    process.exit(1);
+    console.error('❌ Connection failed:', error);
   }
 };
+
 
 export { sequelize, connectDB };
