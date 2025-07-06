@@ -81,8 +81,7 @@ export const getParentDocument = async (req, res) => {
 export const addDocument = async (req, res) => {
   const file = req.file;
   const { type, uploaded_by, parent_id } = req.body;
-  console.log("req.body =>", req.body);
-  console.log("req.file =>", req.file);
+ 
   if (!file) {
     return res.status(400).json({ message: 'No files sent.' });
   }
