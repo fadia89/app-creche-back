@@ -8,9 +8,9 @@ import { upload } from "../middlewares/uploadFile.js";
 
 const authRouter = Router();
 
-authRouter.post ('/register', upload.single('image'),verifyUserFields,createUser);
+authRouter.post ('/register', upload.single('image'),verifyUserFields, createUser);
 
-authRouter.post('/login',loginUser);
+authRouter.post('/login', loginUser);
 
 
 export default authRouter

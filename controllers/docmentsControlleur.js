@@ -17,7 +17,7 @@ export const getAllDocuments = async (req, res) => {
       },
     });
 
-    if (documents.length < 1) {
+    if (!documents || documents.length < 1) {
       return res.status(404).json({ message: 'No document found' });
     }
 
@@ -81,6 +81,8 @@ export const getParentDocument = async (req, res) => {
 export const addDocument = async (req, res) => {
   const file = req.file;
   const { type, uploaded_by, parent_id } = req.body;
+  console.log("req.body =>", req.body);
+  console.log("req.file =>", req.file);
   if (!file) {
     return res.status(400).json({ message: 'No files sent.' });
   }
@@ -89,7 +91,7 @@ export const addDocument = async (req, res) => {
     return res.status(400).json({ message: 'Parent ID is required' });
   }
   try {
-    //// Check if a document with the same file name already exists in the database
+    // Check if a document with the same file name already exists in the database
     const existingDoc = await Document.findOne({
       where: { file_name: file.originalname }
     });

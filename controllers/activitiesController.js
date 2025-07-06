@@ -3,6 +3,8 @@ import Event from "../models/events.js";
 import Children from "../models/childrens.js";
 import Parent from "../models/parents.js";
 
+const DATABASE_URL = process.env.DATABASE_URL;
+
 export const getAllActivities = async (req, res) => {
     try {
         const activities = await Activity.findAll({
@@ -134,7 +136,7 @@ export const updateActivitie = async (req, res) => {
             image: req.file ? req.file.filename : activity.image
         });
         const responseActivity = updatedActivity.toJSON();
-        responseActivity.image = `http://localhost:8000/uploads/${responseActivity.image}`;
+        responseActivity.image = `${DATABASE_URL}/uploads/${responseActivity.image}`;
         return res.status(200).json(updatedActivity);
 
     } catch (err) {
