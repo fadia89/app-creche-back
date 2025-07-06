@@ -1,8 +1,8 @@
-
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import User from '../models/users.js';
 import { Router } from 'express';
+import { sequelize } from '../dataBase/db.js';
 
 
 const authRouter = Router();
@@ -57,11 +57,13 @@ export const createUser = async (req, res) => {
 
 export const loginUser = async (req, res) => {
     const { email, password } = req.body;
+    
+    
     try {
+      
         //Searches the database for a user whose email address matches the one provided.
         const user = await User.findOne({ where: { email } });
-
-
+        console.log("l'email", user)
 
         if (!user) {
             return res.status(401).json({ message: 'Email or password invalid' });

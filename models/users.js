@@ -1,6 +1,5 @@
-import { DataTypes } from 'sequelize';
+import { Sequelize, DataTypes } from 'sequelize';
 import { sequelize } from '../dataBase/db.js';
-import Parent from './parents.js';
 
 const User = sequelize.define('user', {
 
@@ -32,15 +31,10 @@ const User = sequelize.define('user', {
   }
 }, {
   tableName: 'Users',
-  timestamps: false  
+  timestamps: false ,
+  freezeTableName: true,
+
 });
-
-
-
-
-
-
-
 
 
 export default User;
