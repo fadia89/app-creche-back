@@ -50,7 +50,7 @@ app.get('/download/:type/:filename', (req, res) => {
   if (type === 'images') {
     folder = 'public/images';
   } else if (type === 'documents') {
-    folder = '/tmp';
+    folder = 'public/documents';
   } else {
     return res.status(400).send('Type de fichier non pris en charge');
   }

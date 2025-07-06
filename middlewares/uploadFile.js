@@ -16,7 +16,7 @@ const storageImages = multer.diskStorage({
  // Middleware for documents
 const storageDocuments = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, '/tmp'); // <- répertoire temporaire valide sur Railway
+    cb(null, 'public/documents/');
   },
   filename: (req, file, cb) => {
     cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
