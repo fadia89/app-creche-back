@@ -58,15 +58,33 @@ export const getDocumentById = async (req, res) => {
 export const getParentDocument = async (req, res) => {
   try {
     const user_id = req.user.id;
+    const role = req.user.role;
 
-    //  Retrieve parent associated with this user
+    if (role === 'admin') {
+      const allDocuments = await Document.findAll({
+        include: [
+          {
+            model: Parent,
+            as: 'parentDetails',
+            include: [
+              {
+                model: User,
+                attributes: ['first_name', 'last_name', 'email'],
+              },
+            ],
+          },
+        ],
+      });
+      return res.status(200).json(allDocuments);
+    }
+
+    // Si utilisateur est parent
     const parent = await Parent.findOne({ where: { user_id } });
 
     if (!parent) {
       return res.status(404).json({ message: "Parent not found for this user" });
     }
 
-    //  Use parent.id to retrieve documents
     const documents = await Document.findAll({
       where: { parent_id: parent.id }
     });
@@ -77,6 +95,7 @@ export const getParentDocument = async (req, res) => {
     return res.status(500).json({ message: "Erreur serveur" });
   }
 };
+
 
 export const addDocument = async (req, res) => {
   const file = req.file;

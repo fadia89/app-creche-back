@@ -14,7 +14,7 @@ const storageImages = multer.diskStorage({
  export   const upload = multer({ storage: storageImages });
 
  // Middleware for documents
-/* const storageDocuments = multer.diskStorage({
+ const storageDocuments = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, 'public/documents/');
   },
@@ -23,37 +23,5 @@ const storageImages = multer.diskStorage({
   }
 });
 
-export const uploadDocuments = multer({ storage: storageDocuments }); */
-// MIME types autorisés
-const allowedMimeTypes = [
-  'application/pdf',
-  'application/msword',
-  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-  'image/png',
-  'image/jpeg',
-];
+export const uploadDocuments = multer({ storage: storageDocuments }); 
 
-const storageDocuments = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'public/documents/');
-  },
-  filename: (req, file, cb) => {
-    cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
-  }
-});
-
-const fileFilter = (req, file, cb) => {
-  if (allowedMimeTypes.includes(file.mimetype)) {
-    cb(null, true);
-  } else {
-    cb(new Error('Type de fichier non autorisé'), false);
-  }
-};
-
-export const uploadDocuments = multer({
-  storage: storageDocuments,
-  fileFilter: fileFilter,
-  limits: {
-    fileSize: 10 * 1024 * 1024, // Limite de 10 Mo
-  }
-});
