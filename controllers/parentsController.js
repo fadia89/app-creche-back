@@ -37,12 +37,14 @@ export const getParentProfile = async (req, res) => {
         {
           model: Parent,
           as: 'parentDetails',
-          attributes: ['address', 'phone'],
+          attributes: ['id', 'address', 'phone'],
         }
       ],
       // Exclude sensitive fields like 'password' and 'role' from the query result for security and privacy.
       attributes: { exclude: ['password', 'role'] }
     });
+    
+console.log('USER FROM DB ===>', JSON.stringify(user, null, 2));
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
@@ -54,7 +56,8 @@ export const getParentProfile = async (req, res) => {
       email: user.email,
       image: user.image,
       address: user.parentDetails?.address || '',
-      phone: user.parentDetails?.phone || ''
+      phone: user.parentDetails?.phone || '',
+       parent: user.parentDetails || null
     };
 
     return res.status(200).json(parentProfile);

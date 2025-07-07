@@ -78,7 +78,7 @@ export const getParentDocument = async (req, res) => {
       return res.status(200).json(allDocuments);
     }
 
-    // Si utilisateur est parent
+    // If user is parent
     const parent = await Parent.findOne({ where: { user_id } });
 
     if (!parent) {

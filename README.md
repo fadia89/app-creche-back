@@ -72,33 +72,33 @@ server/
 
 
 ## Documentation
-# Node.js
+#### Node.js
 https://nodejs.org
 
-# PostgreSQL (SGBD relationnel utilisé pour stocker les données)
+#### PostgreSQL (SGBD relationnel utilisé pour stocker les données)
 https://www.postgresql.org/
 
-# Express permettant de créer  des serveurs web et des API REST.
+#### Express permettant de créer  des serveurs web et des API REST.
 https://expressjs.com/fr
 
-#  JSON Web Token (JWT)
+####  JSON Web Token (JWT)
 Permet de gérer l’authentification via des tokens signés, envoyés au client après la connexion, pour sécuriser les routes privées.
 https://jwt.io/
 
-# bcrypt
+#### bcrypt
 Librairie pour hasher les mots de passe de manière sécurisée avant de les stocker dans la base de données.
 https://www.npmjs.com/package/bcrypt
 
-# CORS (Cross-Origin Resource Sharing)
+#### CORS (Cross-Origin Resource Sharing)
 Middleware permettant d’autoriser ou bloquer les requêtes entre serveurs et clients d’origines différentes (client React → API Node).
 https://www.npmjs.com/package/cors
 
-# Multer 
+#### Multer 
 Middleware pour gérer l’upload de fichiers (images, documents...) via des formulaires multipart/form-data.
 https://www.npmjs.com/package/multer
-# Postman 
+#### Postman 
 Outil de test d’API qui permet d’envoyer des requêtes HTTP (GET, POST, PUT, DELETE) et de visualiser les réponses.
 https://www.postman.com/
 
-# Git 
+#### Git 
  https://git-scm.com/
