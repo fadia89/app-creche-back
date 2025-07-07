@@ -43,8 +43,8 @@ export const getParentProfile = async (req, res) => {
       // Exclude sensitive fields like 'password' and 'role' from the query result for security and privacy.
       attributes: { exclude: ['password', 'role'] }
     });
-    
-console.log('USER FROM DB ===>', JSON.stringify(user, null, 2));
+
+    console.log('USER FROM DB ===>', JSON.stringify(user, null, 2));
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
@@ -57,7 +57,7 @@ console.log('USER FROM DB ===>', JSON.stringify(user, null, 2));
       image: user.image,
       address: user.parentDetails?.address || '',
       phone: user.parentDetails?.phone || '',
-       parent: user.parentDetails || null
+      parent: user.parentDetails || null
     };
 
     return res.status(200).json(parentProfile);
@@ -85,23 +85,23 @@ export const getManyParent = async (req, res) => {
 
 
 
-export const getParentsByID = async (req,res) => {
-    const {id}= req.params;
-    
-    try{
-        const parentByID = await Parent.findByPk(id);
-        if (!parentByID){
-            return res.status(404).json({message: 'Parent not found'});
-        }
-        return res.status(200).json(parentByID);
+export const getParentsByID = async (req, res) => {
+  const { id } = req.params;
 
+  try {
+    const parentByID = await Parent.findByPk(id);
+    if (!parentByID) {
+      return res.status(404).json({ message: 'Parent not found' });
     }
-    catch(err){ 
+    return res.status(200).json(parentByID);
+
+  }
+  catch (err) {
     console.log(err);
-    return res.status(500).json({message: 'Internal server error'});
+    return res.status(500).json({ message: 'Internal server error' });
 
-    }
-    
+  }
+
 };
 
 export const updateProfile = async (req, res) => {
