@@ -63,7 +63,7 @@ export const getParentProfile = async (req, res) => {
     return res.status(200).json(parentProfile);
 
   } catch (err) {
-    console.err(err);
+    console.error(err);
     return res.status(500).json({ message: 'Internal server error' });
   }
 };
