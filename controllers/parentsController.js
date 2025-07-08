@@ -114,35 +114,31 @@ export const updateProfile = async (req, res) => {
   const image = req.file ? `/images/${req.file.filename}` : null;
 
   try {
-    const parent = await Parent.findOne({
-      where: { user_id: id },
-      include: [{ model: User, as: 'user' }]
-    });
+    // Retrieve user
+    const user = await User.findByPk(id, { include: [{ model: Parent, as: 'parentDetails' }] });
+    if (!user) return res.status(404).json({ message: 'User not found' });
 
-    if (!parent) return res.status(404).json({ message: 'Parent not found' });
-
-    const user = parent.user;
-    if (!user) return res.status(404).json({ message: 'Associated user not found' });
-
-    // Check that at least one field is different
-    const isModified =
-      (address && address !== parent.address) ||
-      (phone && phone !== parent.phone) ||
+    // Detect changes for User
+    const isUserModified =
       (first_name && first_name !== user.first_name) ||
       (last_name && last_name !== user.last_name) ||
       (email && email !== user.email) ||
       (password && password !== user.password) ||
       (image && image !== user.image);
 
-    if (!isModified) {
+    // Detect changes for Parent if existing
+    let isParentModified = false;
+    if (user.parentDetails) {
+      isParentModified =
+        (address && address !== user.parentDetails.address) ||
+        (phone && phone !== user.parentDetails.phone);
+    }
+
+    if (!isUserModified && !isParentModified) {
       return res.status(400).json({ message: 'No changes detected.' });
     }
 
-    // Update only modified fields
-    await parent.update({
-      ...(address ? { address } : {}), //... decomposes one object into another, to only update fields that have a value and avoid overwriting with null or undefined.
-    });
-
+    // User Update if existing
     await user.update({
       ...(first_name ? { first_name } : {}),
       ...(last_name ? { last_name } : {}),
@@ -151,7 +147,15 @@ export const updateProfile = async (req, res) => {
       ...(image ? { image } : {}),
     });
 
-    return res.status(200).json({ message: 'Profile successfully updated', parent });
+    // Parent Update if existing
+    if (user.parentDetails) {
+      await user.parentDetails.update({
+        ...(address ? { address } : {}),
+        ...(phone ? { phone } : {}),
+      });
+    }
+
+    return res.status(200).json({ message: 'Profile successfully updated' });
 
   } catch (err) {
     console.error(err);
