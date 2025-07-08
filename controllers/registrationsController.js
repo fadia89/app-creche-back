@@ -69,7 +69,7 @@ export const addRegistration = async (req, res) => {
         // Create the registration
         const newRegistration = await Registration.create({
             registration_date: new Date(),
-            status: 'Pending',
+            status: 'pending',
             parent_id,
             children_id,
             user_id
