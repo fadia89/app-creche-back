@@ -57,7 +57,8 @@ export const getParentProfile = async (req, res) => {
       image: user.image,
       address: user.parentDetails?.address || '',
       phone: user.parentDetails?.phone || '',
-      parent: user.parentDetails || null
+      parent: user.parentDetails || null,
+      isParent: !!user.parentDetails
     };
 
     return res.status(200).json(parentProfile);
