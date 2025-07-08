@@ -77,7 +77,7 @@ export const addRegistration = async (req, res) => {
 
         res.status(201).json(newRegistration);
     } catch (err) {
-        console.err(err);
+        console.error(err);
         return res.status(500).json({ message: 'Internal server error' });
     }
 };
