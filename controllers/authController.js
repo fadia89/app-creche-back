@@ -63,7 +63,7 @@ export const loginUser = async (req, res) => {
       
         //Searches the database for a user whose email address matches the one provided.
         const user = await User.findOne({ where: { email } });
-        console.log("l'email", user)
+        //console.log("l'email", user)
 
         if (!user) {
             return res.status(401).json({ message: 'Email or password invalid' });

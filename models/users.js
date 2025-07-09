@@ -23,7 +23,7 @@ const User = sequelize.define('user', {
   image: {
     type: DataTypes.STRING,
     allowNull: true,
-    defaultValue: '/public/images/par_defaut.jpg',
+    defaultValue: '/public/images/par_default.jpg',
   },
   role: {
     type: DataTypes.ENUM('admin', 'parent'),
